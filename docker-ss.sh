@@ -3,7 +3,7 @@ echo "      docker版 shadowsocks 安装脚本"
 echo "#########################################"
 echo "*使用 teddysun 制作的 docker 镜像*"
 echo ""
-echo "安装docker中，可能需要手动确认安装（回车即可）"
+echo "安装工具ing，可能需要手动确认（回车即可）"
 echo ""
 apt install update
 apt install curl
@@ -170,7 +170,16 @@ echo ""
 echo "ss连接："
 base64=$( base64 -w 0 <<< $ss)
 echo "ss://$base64"
+cat > ./ss-conf.txt <<EOF
+服务器地址 = $ip
+服务器端口 = $port
+密码 = $password
+加密方式 = $encode
+
+ss://$base64
+EOF
 echo ""
+echo "本路径下已经生成 ss-conf.txt 文档记录配置"
 echo "输入 docker ps 查看docker运行情况"
 echo "输入 docker rm -f $name 即可卸载docker"
 
