@@ -1,9 +1,10 @@
 echo "#########################################"
 echo "      docker版 shadowsocks 安装脚本"
 echo "#########################################"
+echo ""
 echo "*使用 teddysun 制作的 docker 镜像*"
 echo ""
-echo "安装docker中，可能需要手动确认安装（回车即可）"
+echo "安装docker中，可能需要手动确认安装（回车即可）部分工具"
 echo ""
 apt install update
 apt install curl
@@ -82,10 +83,7 @@ else
 	elif [[ $ENCODE == 2 ]];then
 		method="AEAD_AES_128_GCM"
 		encode="aes-128-gcm"
-	elif [[ $ENCODE == 3  ]];then
-		method="AEAD_CHACHA20_POLY1305"
-		encode="chacha20-ietf-poly1305"
-	elif [[ $ENCODE == "" ]];then
+	else
 		method="AEAD_CHACHA20_POLY1305"
 		encode="chacha20-ietf-poly1305"
 	fi
@@ -113,6 +111,27 @@ fi
 echo "密码为 $password"
 
 echo ""
+ip=$(curl ipv4.ip.sb)
+echo ""
+echo "配置信息如下"
+echo "
+服务器地址 = $ip
+服务器端口 = $port
+密码 = $password
+加密方式 = $encode"
+echo ""
+
+echo "请确认以上信息，如已经安装 $version docker 将删除并以此配置重新安装"
+read -p "是否继续？（y/n）(默认继续)" CHECK
+if [[ $CHECK == n|N ]];then
+  break
+else
+  ":"
+fi
+
+docker rm -f $name
+
+echo ""
 echo "docker 启动ing……"
 
 
@@ -137,15 +156,17 @@ fi
 
 echo ""
 echo "安装完成~"
-echo ""
 
 echo "配置文件位于 $path/config.json："
-cat $path/config.json
-echo "使用 ss-libev 或 ss-rust，可修改此配置文件，输入 docker restart $version 即可使用新配置"
-echo "使用 go-ss 则请将原有docker卸载后重新运行脚本更改配置"
+
+echo ""
+if [[ $VERSION == 3 ]];then
+	echo "使用 $version 则请重新运行脚本更改配置"
+else
+	echo "使用 $version，可修改此配置文件，输入 docker restart $name 即可使用新配置"
+fi
 echo ""
 
-ip=$(curl ipv4.ip.sb)
 ss=$encode:$password@$ip:$port
 echo ""
 echo "ss连接："
@@ -153,4 +174,5 @@ base64=$( base64 -w 0 <<< $ss)
 echo "ss://$base64"
 echo ""
 echo "输入 docker ps 查看docker运行情况"
-echo "输入 docker rm -f $version 即可卸载docker"
+echo "输入 docker rm -f $name 即可卸载docker"
+
