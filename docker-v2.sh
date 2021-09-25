@@ -74,14 +74,6 @@ echo "
 额外ID (Alter Id) = 0
 传输协议 (Network) = $method"
 echo ""
-cat > ./conf.txt <<EOF
-地址 (Address) = $ip
-端口 (Port) = $port
-用户ID (User ID / UUID) = $password
-额外ID (Alter Id) = 0
-传输协议 (Network) = $method
-EOF
-
 
 echo "请确认以上信息，如已经安装相同docker 将删除并以此配置重新安装"
 read -p "是否继续？（y/n）(默认继续)" CHECK
@@ -163,9 +155,15 @@ echo ""
 echo "vmess 链接："
 echo "vmess://$in"
 echo ""
-cat >> ./conf.txt <<EOF
+cat > ./v2-conf.txt <<EOF
+地址 (Address) = $ip
+端口 (Port) = $port
+用户ID (User ID / UUID) = $password
+额外ID (Alter Id) = 0
+传输协议 (Network) = $method
+
 vmess://$in
 EOF
-echo "本路径下已经生成 conf.txt 文档记录配置，忘了可查看"
+echo "本路径下已经生成 v2-conf.txt 文档记录配置，忘了可查看"
 echo "重装请重新执行此脚本"
 echo "输入 docker rm -f $core 可删除docker"
