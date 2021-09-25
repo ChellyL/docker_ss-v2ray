@@ -2,14 +2,16 @@ echo "######################################"
 echo "    简单的 docker 版 v2ray 安装脚本"
 echo "######################################"
 echo "*使用 teddysun 的 docker 镜像"
+echo ""
+echo "安装docker中，可能需要手动确认安装（回车即可）部分工具"
+echo ""
 apt update
 apt install curl
 apt install docker
 apt install docker-compose
-docker rm -f v2ray
 echo ""
 echo "协议"
-echo "1. vmess + tcp (原始版)"
+echo "1. vmess + tcp"
 echo "2. vmess + ws"
 read -p "选择你想安装的协议组合(默认 tcp )：" METHOD
 if [[ $METHOD == 2 ]];then
@@ -57,6 +59,25 @@ else
 	password=$PASSWORD
 fi
 echo "密码为 $password"
+echo ""
+ip=$(curl -4 ip.sb)
+echo ""
+echo "配置信息如下"
+echo "
+地址 (Address) = $ip
+端口 (Port) = $port
+用户ID (User ID / UUID) = $password
+额外ID (Alter Id) = 0
+传输协议 (Network) = $method"
+echo ""
+
+echo "请确认以上信息，如已经安装 $core docker 将删除并以此配置重新安装"
+read -p "是否继续？（y/n）(默认继续)" CHECK
+if [[ $CHECK == n|N ]];then
+  break
+else
+  ":"
+fi
 
 cat > $path/config.json <<EOF
 {
@@ -97,24 +118,15 @@ cat > $path/config.json <<EOF
 }
 EOF
 
+docker rm -f $core
 echo ""
 echo "docker 启动ing……"
 
-docker run -d -p $port:$port --name v2ray --restart=always -v /etc/v2ray:/etc/v2ray teddysun/v2ray
-
-
-ip=$(curl -4 ip.sb)
+docker run -d -p $port:$port --name $core --restart=always -v $path:$path teddysun/v2ray
 
 
 echo ""
 echo "配置文件位于 $path/config.json"
-echo "配置信息如下"
-echo "
-地址 (Address) = $ip
-端口 (Port) = $port
-用户ID (User ID / UUID) = $password
-额外ID (Alter Id) = 0
-传输协议 (Network) = $method"
 
 
 link="{  \"v\": \"2\",
@@ -135,3 +147,6 @@ in=$( base64 -w 0 <<< $link)
 echo ""
 echo "vmess 链接："
 echo "vmess://$in"
+echo ""
+echo "重装请重新执行此脚本"
+echo "输入 docker rm -f $core 可删除docker"
