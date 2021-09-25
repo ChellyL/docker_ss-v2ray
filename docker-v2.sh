@@ -13,16 +13,15 @@ apt install docker
 apt install docker-compose
 echo ""
 echo "准备完毕~"
-echo "********************************8"
-echo ""
+echo "********************************"
 echo "协议"
 echo "1. vmess + tcp"
 echo "2. vmess + ws"
 read -p "选择你想安装的协议组合(默认 tcp )：" METHOD
 if [[ $METHOD == 2 ]];then
-	method="ws"
+  method="ws"
 else
-	method="tcp"
+  method="tcp"
 fi
 echo "协议为 vmess + $method"
 echo ""
@@ -32,9 +31,9 @@ echo "1. v2ray"
 echo "2. xray "
 read -p "请选择内核（默认 v2ray）：" CORE
 if [[ $CORE == 2 ]];then
-	core=xray
+  core=xray
 else
-	core=v2ray
+  core=v2ray
 fi
 echo "内核为 $core"
 
@@ -42,7 +41,7 @@ docker pull teddysun/$core
 
 path=/etc/$core
 if [[ -d $path ]];then
-	":"
+  ":"
 else
 mkdir $path 
 fi
@@ -50,18 +49,18 @@ fi
 echo ""
 read -p "请输入端口（1-65535）(回车随机生成)：" PORT
 if [[ -n $PORT ]];then
-	port=$PORT
+  port=$PORT
 else
-	port=$RANDOM
+  port=$RANDOM
 fi
 echo "端口为 $port"
 
 echo ""
 read -p "请输入密码（必须为uuid；回车自动生成）:" PASSWORD
 if [[ -z $PASSWORD ]];then
-	password=$(cat /proc/sys/kernel/random/uuid)	
+  password=$(cat /proc/sys/kernel/random/uuid)  
 else
-	password=$PASSWORD
+  password=$PASSWORD
 fi
 echo "密码为 $password"
 
@@ -127,7 +126,7 @@ docker rm -f $core
 echo ""
 echo "docker 启动ing……"
 
-docker run -d -p $port:$port --name v2ray --restart=always -v /etc/v2ray:/etc/v2ray teddysun/v2ray
+docker run -d -p $port:$port --name $core --restart=always -v /etc/v2ray:/etc/v2ray teddysun/v2ray
 
 
 ip=$(curl -4 ip.sb)
@@ -156,6 +155,7 @@ echo "vmess 链接："
 echo "vmess://$in"
 echo ""
 cat > ./v2-conf.txt <<EOF
+
 地址 (Address) = $ip
 端口 (Port) = $port
 用户ID (User ID / UUID) = $password
@@ -163,6 +163,7 @@ cat > ./v2-conf.txt <<EOF
 传输协议 (Network) = $method
 
 vmess://$in
+
 EOF
 echo "本路径下已经生成 v2-conf.txt 文档记录配置，忘了可查看"
 echo "重装请重新执行此脚本"
