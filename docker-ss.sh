@@ -149,7 +149,7 @@ EOF
 
 
 if [[ $VERSION != 3 ]];then
-docker run -d -p $port:$port -p $port:$port/udp --name $name --restart=always -v /etc/$version:/etc/$version teddysun/$version
+docker run -d -p $port:$port -p $port:$port/udp --name $name --restart=always -v $path:$path teddysun/$version
 else
 	docker run -d -p $port:$port -p $port:$port/udp --name go-ss --restart=always -e SERVER_PORT=$port -e METHOD=$method -e PASSWORD=$password teddysun/go-shadowsocks2
 fi
