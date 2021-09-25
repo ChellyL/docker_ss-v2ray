@@ -1,10 +1,9 @@
 echo "#########################################"
 echo "      docker版 shadowsocks 安装脚本"
 echo "#########################################"
-echo ""
 echo "*使用 teddysun 制作的 docker 镜像*"
 echo ""
-echo "安装docker中，可能需要手动确认安装（回车即可）部分工具"
+echo "安装docker中，可能需要手动确认安装（回车即可）"
 echo ""
 apt install update
 apt install curl
@@ -17,23 +16,20 @@ echo "############################"
 echo ""
 echo "shadowsocks版本"
 echo ""
-echo "1. shadowsocks-rust"
-echo "2. shadowsocks-libev"
+echo "1. shadowsocks-libev"
+echo "2. shadowsocks-rust"
 echo "3. go-shadowsocks2"
 echo ""
-read -p "请选择版本（默认为shadowsocks-rust）：" VERSION
-if [[ $VERSION == 1 ]];then
+read -p "请选择版本（默认为shadowsocks-libev）：" VERSION
+if [[ $VERSION == 2 ]];then
 	version="shadowsocks-rust"
 	name="ss-rust"
-elif [[ $VERSION == 2 ]]; then
-	version="shadowsocks-libev"
-	name="ss-libev" 
 elif [[ $VERSION == 3 ]]; then
 	version="go-shadowsocks2"
 	name="go-ss"
-elif [[ $VERSION == "" ]];then
-	version="shadowsocks-rust"
-	name="ss-rust"
+else
+	version="shadowsocks-libev"
+	name="ss-libev"
 fi
 echo "使用 $version"
 echo ""
@@ -121,15 +117,16 @@ echo "
 加密方式 = $encode"
 echo ""
 
-echo "请确认以上信息，如已经安装 $version docker 将删除并以此配置重新安装"
+echo "请确认以上配置信息，如已经安装相同 docker 将删除并以此配置重新安装"
 read -p "是否继续？（y/n）(默认继续)" CHECK
-if [[ $CHECK == n|N ]];then
-  break
+if [[ $CHECK =~ "n"|"N" ]];then
+  echo "退出ing……"
+  exit
 else
   ":"
 fi
 
-docker rm -f $name
+docker rm -f $version
 
 echo ""
 echo "docker 启动ing……"
@@ -149,7 +146,7 @@ EOF
 
 
 if [[ $VERSION != 3 ]];then
-docker run -d -p $port:$port -p $port:$port/udp --name $name --restart=always -v $path:$path teddysun/$version
+docker run -d -p $port:$port -p $port:$port/udp --name $name --restart=always -v /etc/$version:/etc/$version teddysun/$version
 else
 	docker run -d -p $port:$port -p $port:$port/udp --name go-ss --restart=always -e SERVER_PORT=$port -e METHOD=$method -e PASSWORD=$password teddysun/go-shadowsocks2
 fi
@@ -161,9 +158,9 @@ echo "配置文件位于 $path/config.json："
 
 echo ""
 if [[ $VERSION == 3 ]];then
-	echo "使用 $version 则请重新运行脚本更改配置"
+	echo "使用 go-ss 则请重新运行脚本更改配置"
 else
-	echo "使用 $version，可修改此配置文件，输入 docker restart $name 即可使用新配置"
+	echo "使用 $version，可修改此配置文件，输入 docker restart $version 即可使用新配置"
 fi
 echo ""
 
@@ -174,5 +171,5 @@ base64=$( base64 -w 0 <<< $ss)
 echo "ss://$base64"
 echo ""
 echo "输入 docker ps 查看docker运行情况"
-echo "输入 docker rm -f $name 即可卸载docker"
+echo "输入 docker rm -f $version 即可卸载docker"
 
