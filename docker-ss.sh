@@ -117,16 +117,17 @@ echo "
 加密方式 = $encode"
 echo ""
 
-echo "请确认以上配置信息，如已经安装相同 docker 将删除并以此配置重新安装"
+echo "请确认以上信息，如已经安装相同 docker 将删除并以此配置重新安装"
 read -p "是否继续？（y/n）(默认继续)" CHECK
 if [[ $CHECK =~ "n"|"N" ]];then
-  echo "退出ing……"
-  exit
+	echo "退出ing"
+	exit
 else
-  ":"
+	":"
 fi
-
-docker rm -f $version
+echo ""
+echo "尝试删除相同docker，如提示error不必理会"
+docker rm -f $name
 
 echo ""
 echo "docker 启动ing……"
@@ -146,7 +147,7 @@ EOF
 
 
 if [[ $VERSION != 3 ]];then
-docker run -d -p $port:$port -p $port:$port/udp --name $name --restart=always -v /etc/$version:/etc/$version teddysun/$version
+docker run -d -p $port:$port -p $port:$port/udp --name $name --restart=always -v $path:$path teddysun/$version
 else
 	docker run -d -p $port:$port -p $port:$port/udp --name go-ss --restart=always -e SERVER_PORT=$port -e METHOD=$method -e PASSWORD=$password teddysun/go-shadowsocks2
 fi
@@ -158,9 +159,9 @@ echo "配置文件位于 $path/config.json："
 
 echo ""
 if [[ $VERSION == 3 ]];then
-	echo "使用 go-ss 则请重新运行脚本更改配置"
+	echo "使用 $versions 可重新运行脚本更改配置"
 else
-	echo "使用 $version，可修改此配置文件，输入 docker restart $version 即可使用新配置"
+	echo "使用 $version，可修改此配置文件，输入 docker restart $name 即可使用新配置"
 fi
 echo ""
 
@@ -171,5 +172,5 @@ base64=$( base64 -w 0 <<< $ss)
 echo "ss://$base64"
 echo ""
 echo "输入 docker ps 查看docker运行情况"
-echo "输入 docker rm -f $version 即可卸载docker"
+echo "输入 docker rm -f $name 即可卸载docker"
 
