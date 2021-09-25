@@ -1,14 +1,19 @@
+echo ""
 echo "######################################"
 echo "    简单的 docker 版 v2ray 安装脚本"
 echo "######################################"
+echo ""
 echo "*使用 teddysun 的 docker 镜像"
 echo ""
-echo "安装docker中，可能需要手动确认安装（回车即可）部分工具"
+echo "安装部分工具，可能需要手动确认安装（回车即可）"
 echo ""
 apt update
 apt install curl
 apt install docker
 apt install docker-compose
+echo ""
+echo "准备完毕~"
+echo "********************************8"
 echo ""
 echo "协议"
 echo "1. vmess + tcp"
@@ -59,8 +64,7 @@ else
 	password=$PASSWORD
 fi
 echo "密码为 $password"
-echo ""
-ip=$(curl -4 ip.sb)
+
 echo ""
 echo "配置信息如下"
 echo "
@@ -70,11 +74,20 @@ echo "
 额外ID (Alter Id) = 0
 传输协议 (Network) = $method"
 echo ""
+cat > ./conf.txt <<EOF
+地址 (Address) = $ip
+端口 (Port) = $port
+用户ID (User ID / UUID) = $password
+额外ID (Alter Id) = 0
+传输协议 (Network) = $method
+EOF
 
-echo "请确认以上信息，如已经安装 $core docker 将删除并以此配置重新安装"
+
+echo "请确认以上信息，如已经安装相同docker 将删除并以此配置重新安装"
 read -p "是否继续？（y/n）(默认继续)" CHECK
-if [[ $CHECK == n|N ]];then
-  break
+if [[ $CHECK =~ n|N ]];then
+  echo "退出ing"
+  exit
 else
   ":"
 fi
@@ -122,12 +135,14 @@ docker rm -f $core
 echo ""
 echo "docker 启动ing……"
 
-docker run -d -p $port:$port --name $core --restart=always -v $path:$path teddysun/v2ray
+docker run -d -p $port:$port --name v2ray --restart=always -v /etc/v2ray:/etc/v2ray teddysun/v2ray
+
+
+ip=$(curl -4 ip.sb)
 
 
 echo ""
 echo "配置文件位于 $path/config.json"
-
 
 link="{  \"v\": \"2\",
   \"ps\": \"\",
@@ -148,5 +163,9 @@ echo ""
 echo "vmess 链接："
 echo "vmess://$in"
 echo ""
+cat >> ./conf.txt <<EOF
+vmess://$in
+EOF
+echo "本路径下已经生成 conf.txt 文档记录配置，忘了可查看"
 echo "重装请重新执行此脚本"
 echo "输入 docker rm -f $core 可删除docker"
