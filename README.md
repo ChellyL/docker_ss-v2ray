@@ -24,3 +24,6 @@ wget https://raw.githubusercontent.com/ChellyL/docker_ss-v2ray/main/docker-v2.sh
 bash docker-v2.sh
 ```
 推荐使用  ylx2016 的 [Linux-NetSpeed](https://github.com/ylx2016/Linux-NetSpeed)来开启bbr（推荐bbr-fq）或升级内核
+```
+wget -O tcp.sh "https://git.io/coolspeeda" && chmod +x tcp.sh && ./tcp.sh
+```
