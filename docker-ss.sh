@@ -183,4 +183,5 @@ EOF
 echo ""
 echo "本路径下已经生成 ss-conf.txt 文档记录配置"
 echo "输入 docker ps 查看docker运行情况"
+echo "输入 docker pull teddysun/$version 更新镜像"
 echo "输入 docker rm -f $name 即可卸载docker"
