@@ -18,7 +18,7 @@ echo "协议"
 echo "1. vmess + tcp"
 echo "2. vmess + ws"
 read -p "选择你想安装的协议组合(默认 tcp )：" METHOD
-if [[ $METHOD == 2 ]];then
+if [[ $METHOD == "2" ]];then
   method="ws"
 else
   method="tcp"
@@ -30,7 +30,7 @@ echo "内核"
 echo "1. v2ray"
 echo "2. xray "
 read -p "请选择内核（默认 v2ray）：" CORE
-if [[ $CORE == 2 ]];then
+if [[ $CORE == "2" ]];then
   core=xray
 else
   core=v2ray
@@ -63,7 +63,9 @@ else
   password=$PASSWORD
 fi
 echo "密码为 $password"
+echo ""
 
+ip=$(curl -4 ip.sb)
 echo ""
 echo "配置信息如下"
 echo "
@@ -128,10 +130,6 @@ echo "docker 启动ing……"
 
 docker run -d -p $port:$port --name $core --restart=always -v /etc/v2ray:/etc/v2ray teddysun/v2ray
 
-
-ip=$(curl -4 ip.sb)
-
-
 echo ""
 echo "配置文件位于 $path/config.json"
 
@@ -167,4 +165,5 @@ vmess://$in
 EOF
 echo "本路径下已经生成 v2-conf.txt 文档记录配置，忘了可查看"
 echo "重装请重新执行此脚本"
+echo "输入 docker pull teddysun/$core 可更新docker"
 echo "输入 docker rm -f $core 可删除docker"
