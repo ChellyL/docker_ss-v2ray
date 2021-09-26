@@ -128,7 +128,7 @@ docker rm -f $core
 echo ""
 echo "docker 启动ing……"
 
-docker run -d -p $port:$port --name $core --restart=always -v /etc/v2ray:/etc/v2ray teddysun/v2ray
+docker run -d -p $port:$port --name $core --restart=always -v $path:$path teddysun/$core
 
 echo ""
 echo "配置文件位于 $path/config.json"
