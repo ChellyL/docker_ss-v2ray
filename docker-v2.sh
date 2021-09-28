@@ -93,7 +93,7 @@ else
   ":"
 fi
 
-wspath=$(cat /dev/urandom | head -1 | md5sum | head -c 5)
+wspath=$(cat /dev/urandom | head -1 | md5sum | head -c 9)
 
 if [[ $METHOD == 1 ]];then
   cat > $path/config.json <<EOF
