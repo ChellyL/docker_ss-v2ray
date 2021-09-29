@@ -18,7 +18,7 @@ echo "********************************"
 echo " 协议 "
 echo "1. vmess + tcp"
 echo "2. vmess + ws"
-read -p " 选择你想安装的协议组合 (默认 ws)：" METHOD
+read -p " 选择你想安装的协议 (默认 ws)：" METHOD
 if [[ $METHOD == "1" ]];then
   method="tcp"
 else
@@ -37,15 +37,6 @@ else
   core=v2ray
 fi
 echo " 内核为 $core"
-
-docker pull teddysun/$core
-
-path=/etc/$core
-if [[ -d $path ]];then
-  ":"
-else
-mkdir $path 
-fi
 
 echo ""
 read -p " 请输入端口（1-65535）(回车随机生成)：" PORT
@@ -75,11 +66,13 @@ else
 fi
 
 wspath=$(cat /proc/sys/kernel/random/uuid | tail -c 12)
+
 echo ""
-if [[ $METHOD != "1" ]];then
-  read -p " 是否使用自定义路径（path）, 默认自动生成(y/n)：" PATH
-  if [[ $PATH =~ n|N ]];then
+if [[ $METHOD != "tcp" ]];then
+  read -p " 是否使用自定义路径（path）, 默认自动生成(y/n)：" CUSPATH
+  if [[ $CUSPATH =~ n|N ]];then
     read -p "请输入自定义路径，无需加 \"/\":" wspath
+    echo " 路径为 /$wspath"
   else
     echo " 路径为 /$wspath"
   fi
@@ -103,12 +96,19 @@ read -p " 是否继续？（y/n）(默认继续)：" CHECK
 if [[ $CHECK =~ n|N ]];then
   echo " 退出 ing"
   exit
-else
+fi
+
+docker pull teddysun/$core
+
+path=/etc/$core
+if [[ -d $path ]];then
   ":"
+else
+mkdir $path 
 fi
 
 
-if [[ $METHOD == 1 ]];then
+if [[ $METHOD == "tcp" ]];then
   cat > $path/config.json <<EOF
   {
     "inbounds": [{
@@ -254,7 +254,7 @@ cat > ./v2-conf.txt <<EOF
  用户 ID (User ID / UUID) = $password
  额外 ID (Alter Id) = 0
  传输协议 (Network) = $method
- 路径 (Path) = /$wspath (仅 WS 协议需要)
+ 路径 (Path) = $wspath (仅 WS 协议需要)
 vmess://$in
 EOF
 echo " 本路径下已经生成 v2-conf.txt "
