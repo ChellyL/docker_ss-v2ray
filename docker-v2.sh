@@ -66,12 +66,25 @@ fi
 echo " 密码为 $password"
 echo ""
 
-read -p "是否使用本机ip作为地址(Address)(y/n)？（默认是）：" ADD
+read -p " 是否使用本机 ip 作为地址 (Address)(y/n)？（默认是）：" ADD
 if [[ $ADD =~ n|N ]];then
-  read -p "请输入作为地址的域名：" WEB
+  read -p " 请输入作为地址的域名：" WEB
   add=$WEB
 else
   add=$ip
+fi
+
+wspath=$(cat /proc/sys/kernel/random/uuid | tail -c 12)
+echo ""
+if [[ $METHOD != "1" ]];then
+  read -p " 是否使用自定义路径（path）, 默认自动生成(y/n)：" PATH
+  if [[ $PATH =~ n|N ]];then
+    read -p "请输入自定义路径，无需加 \"/\":" wspath
+  else
+    echo " 路径为 /$wspath"
+  fi
+else
+  ":"
 fi
 
 echo ""
@@ -81,7 +94,8 @@ echo "
  端口 (Port) = $port
  用户 ID (User ID / UUID) = $password
  额外 ID (Alter Id) = 0
- 传输协议 (Network) = $method"
+ 传输协议 (Network) = $method
+ 路径 (Path) = /$wspath (仅 WS 协议需要)"
 echo ""
 
 echo " 请确认以上信息，如已经安装相同 docker 将删除并以此配置重新安装 "
@@ -93,7 +107,6 @@ else
   ":"
 fi
 
-wspath=$(cat /dev/urandom | head -1 | md5sum | head -c 9)
 
 if [[ $METHOD == 1 ]];then
   cat > $path/config.json <<EOF
@@ -204,7 +217,6 @@ else
         ]
     }
 }
-
 EOF
   link="{  \"v\": \"2\",
   \"ps\": \"\",
@@ -242,7 +254,7 @@ cat > ./v2-conf.txt <<EOF
  用户 ID (User ID / UUID) = $password
  额外 ID (Alter Id) = 0
  传输协议 (Network) = $method
- 路径 (Path) = $wspath (仅WS协议需要)
+ 路径 (Path) = /$wspath (仅 WS 协议需要)
 vmess://$in
 EOF
 echo " 本路径下已经生成 v2-conf.txt "
