@@ -34,15 +34,6 @@ else
 fi
 echo " 使用 $version"
 echo ""
-echo " 镜像下载 ing……"
-
-docker pull teddysun/$version
-path=/etc/$version
-if [[ -d $path ]];then
-	":"
-else
-mkdir $path 
-fi
 
 if [[ $VERSION != 3 ]];then
 	echo ""
@@ -134,6 +125,13 @@ else
 	":"
 fi
 echo ""
+docker pull teddysun/$version
+path=/etc/$version
+if [[ -d $path ]];then
+	":"
+else
+mkdir $path 
+fi
 echo " 尝试删除相同 docker，如提示 error 不必理会 "
 docker rm -f $name
 
