@@ -33,9 +33,8 @@ else
 	name="ss-libev"
 fi
 echo " 使用 $version"
-echo ""
 
-if [[ $VERSION != 3 ]];then
+if [[ $VERSION != "go-shadowsocks" ]];then
 	echo ""
 	echo " 加密方式 "
 	echo ""
@@ -124,7 +123,7 @@ if [[ $CHECK =~ "n"|"N" ]];then
 else
 	":"
 fi
-echo ""
+
 docker pull teddysun/$version
 path=/etc/$version
 if [[ -d $path ]];then
@@ -132,6 +131,7 @@ if [[ -d $path ]];then
 else
 mkdir $path 
 fi
+echo ""
 echo " 尝试删除相同 docker，如提示 error 不必理会 "
 docker rm -f $name
 
@@ -160,16 +160,7 @@ fi
 
 echo ""
 echo " 安装完成～"
-
-echo " 配置文件位于 $path/config.json："
-
-echo ""
-if [[ $VERSION == 3 ]];then
-	echo " 使用 $versions 可重新运行脚本更改配置 "
-else
-	echo " 使用 $version，可修改此配置文件，输入 docker restart $name 即可使用新配置 "
-fi
-echo ""
+echo " 配置文件位于 $path/config.json"
 
 ss=$encode:$password@$add:$port
 echo ""
@@ -188,3 +179,4 @@ echo " 本路径下已经生成 ss-conf.txt  "
 echo " 输入 docker ps 查看 docker 运行情况 "
 echo " 输入 docker pull teddysun/$version 更新镜像 "
 echo " 输入 docker rm -f $name 即可卸载 docker"
+echo ""
