@@ -249,15 +249,26 @@ echo "vmess 链接："
 echo "vmess://$in"
 echo ""
 cat > ./v2-conf.txt <<EOF
+
  地址 (Address) = $add
  端口 (Port) = $port
  用户 ID (User ID / UUID) = $password
  额外 ID (Alter Id) = 0
  传输协议 (Network) = $method
  路径 (Path) = /$wspath (仅 WS 协议需要)
+
 vmess://$in
+
+更新：
+1.更新镜像: 
+docker pull teddysun/$core
+2.删除容器:
+docker rm -f $core
+3.重启容器：
+docker run -d -p $port:$port --name $core --restart=always -v $path:$path teddysun/$core
+
 EOF
 echo " 本路径下已经生成 v2-conf.txt "
 echo " 重装请重新执行此脚本 "
-echo " 输入 docker pull teddysun/$core 可更新 docker"
+echo " 更新方法在 v2-conf.txt 里"
 echo " 输入 docker rm -f $core 可删除 docker"
