@@ -168,15 +168,28 @@ echo "ss 连接："
 base64=$( base64 -w 0 <<< $ss)
 echo "ss://$base64"
 cat > ./ss-conf.txt <<EOF
+
  服务器地址 = $add
  服务器端口 = $port
  密码 = $password
  加密方式 = $encode
+ 
 ss://$base64
+
+更新：
+1.更新镜像: 
+docker pull teddysun/$version
+2.删除容器:
+docker rm -f $name
+3.重启容器：
+docker run -d -p $port:$port -p $port:$port/udp --name $name --restart=always -v $path:$path teddysun/$version
+如果是go-ss用这个：
+docker run -d -p $port:$port -p $port:$port/udp --name go-ss --restart=always -e SERVER_PORT=$port -e METHOD=$method -e PASSWORD=$password teddysun/go-shadowsocks2
+
 EOF
 echo ""
 echo " 本路径下已经生成 ss-conf.txt  "
 echo " 输入 docker ps 查看 docker 运行情况 "
-echo " 输入 docker pull teddysun/$version 更新镜像 "
+echo " 更新方法"
 echo " 输入 docker rm -f $name 即可卸载 docker"
 echo ""
