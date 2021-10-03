@@ -190,6 +190,6 @@ EOF
 echo ""
 echo " 本路径下已经生成 ss-conf.txt  "
 echo " 输入 docker ps 查看 docker 运行情况 "
-echo " 更新方法"
+echo " 更新方法在txt里"
 echo " 输入 docker rm -f $name 即可卸载 docker"
 echo ""
